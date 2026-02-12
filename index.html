@@ -18,6 +18,11 @@
       animation: bounce 2s ease infinite;
     }
 
+    .shake {
+      animation: shake 1.2s ease-in-out infinite;
+      transform-origin: center;
+    }
+
     @keyframes bounce {
       0%, 20%, 50%, 80%, 100% {
         transform: translateY(0);
@@ -27,6 +32,24 @@
       }
       60% {
         transform: translateY(-10px);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0) rotate(0deg);
+      }
+      20% {
+        transform: translateX(-2px) rotate(-4deg);
+      }
+      40% {
+        transform: translateX(2px) rotate(3deg);
+      }
+      60% {
+        transform: translateX(-1px) rotate(-2deg);
+      }
+      80% {
+        transform: translateX(1px) rotate(2deg);
       }
     }
   </style>
@@ -65,6 +88,54 @@
           No
         </button>
       </div>
+
+      <!-- Love letter (hidden until Yes) -->
+      <section id="letterCard" class="w-full max-w-xl mt-8 hidden">
+        <div class="rounded-2xl bg-white/80 backdrop-blur border border-pink-200 shadow-sm p-5">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-semibold text-[#bd1e59]">A letter for you</h2>
+              <p class="text-sm text-pink-900/70 mt-1">Tap the little envelope.</p>
+            </div>
+            <button
+              id="openLetterButton"
+              class="shake inline-flex items-center justify-center rounded-md px-3 py-2 text-xl bg-pink-600 text-white hover:bg-pink-500 transition"
+              type="button"
+              aria-label="Open letter"
+            >
+              ✉️
+            </button>
+          </div>
+
+          <div class="mt-4 text-pink-950/90 leading-relaxed">
+            <p id="letterPreview">
+              I’ve been thinking about you a lot lately, and I wanted to tell you something…
+            </p>
+
+            <div id="letterLockedNote" class="mt-3 text-sm text-pink-900/70">
+              <!-- Updated in JS after Yes is clicked -->
+              <!-- Intentionally left subtle so there’s no hint before Yes -->
+            </div>
+
+            <div id="letterBody" class="mt-4 hidden">
+              <p>My love,</p>
+              <p class="mt-3">
+                I’m really grateful for you — for the way you make me feel understood, cared for, and
+                genuinely happy.
+              </p>
+              <p class="mt-3">
+                I love spending time with you, I love learning you, and I love the little moments
+                with you that end up meaning the most to me.
+              </p>
+              <p class="mt-3">
+                If you’ll let me, I’d love to make this Valentine’s Day special for us.
+              </p>
+              <p class="mt-3">Love,</p>
+              <p>Your Name</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -76,6 +147,10 @@
       const imageDisplay = document.getElementById('imageDisplay');
       const valentineQuestion = document.getElementById('valentineQuestion');
       const responseButtons = document.getElementById('responseButtons');
+      const letterCard = document.getElementById('letterCard');
+      const openLetterButton = document.getElementById('openLetterButton');
+      const letterBody = document.getElementById('letterBody');
+      const letterLockedNote = document.getElementById('letterLockedNote');
 
       // Configuration
       const GROWTH_PER_CLICK = 35;
@@ -116,6 +191,25 @@
       let buttonHeight = 48;
       let buttonWidth = 80;
       let fontSize = 20;
+      let letterOpenedOnce = false;
+
+      openLetterButton.addEventListener('click', () => {
+        const opening = letterBody.classList.contains('hidden');
+
+        if (opening && !letterOpenedOnce) {
+          letterOpenedOnce = true;
+
+          // Small celebratory confetti when the letter is first opened
+          confetti({
+            particleCount: 40,
+            spread: 70,
+            startVelocity: 25,
+            colors: ['#ff69b4', '#ff1493', '#ff6b81', '#e84393'],
+          });
+        }
+
+        letterBody.classList.toggle('hidden');
+      });
 
       noButton.addEventListener('click', () => {
         if (noClickCount >= MAX_NO_CLICKS) return;
@@ -144,6 +238,8 @@
         imageDisplay.alt = ALT_TEXTS[ALT_TEXTS.length - 1];
         valentineQuestion.textContent = 'Yayyy!! :3';
         responseButtons.style.display = 'none';
+        letterCard.classList.remove('hidden');
+        letterLockedNote.textContent = 'Open it when you’re ready.';
 
         // Heart-shaped confetti for a valentine theme
         const heart = confetti.shapeFromPath({
