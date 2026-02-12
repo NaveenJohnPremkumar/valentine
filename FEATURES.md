@@ -18,7 +18,7 @@ In [`index.html`](index.html):
   - “No” click increments `noClickCount`, swaps GIF, grows “Yes” button, changes “No” text.
   - “Yes” click swaps final GIF, sets question text to `Yayyy!! :3`, hides `#responseButtons`, and fires heart confetti.
 
-We’ll add new sections *below* the existing question area, keep the current behavior intact, and simply **reveal extra content** after “Yes” (and optionally via a secret code).
+We’ll add new sections *below* the existing question area, keep the current behavior intact, and simply **reveal extra content** after “Yes”.
 
 ---
 
@@ -27,7 +27,7 @@ We’ll add new sections *below* the existing question area, keep the current be
 ### What it is
 - A beautiful **love letter card** with:
   - A short preview (always visible)
-  - A “Read the full letter” action that only unlocks **after “Yes”** (or via a secret code)
+  - A “Read the full letter” action that only unlocks **after “Yes”**
 
 ### How to implement (static)
 
@@ -444,91 +444,6 @@ reasonsSection.classList.remove('hidden');
 
 ---
 
-## Feature 5 — Secret code Easter egg (unlocks bonus line / bonus photo)
-
-### What it is
-A tiny “P.S.” link opens a passcode modal. Correct code unlocks:
-- an extra paragraph in the letter, or
-- a bonus photo, or
-- both
-
-### How to implement (static)
-
-#### 1) Add markup (HTML)
-Near the bottom of your main content (still inside the existing `<section>`), add:
-
-```html
-<button id="psLink" class="mt-6 text-xs text-pink-900/60 hover:text-pink-900 underline" type="button">
-  P.S.
-</button>
-
-<div id="secretModal" class="fixed inset-0 hidden items-center justify-center bg-black/60 p-4">
-  <div class="w-full max-w-sm rounded-2xl bg-white p-5">
-    <div class="flex items-center justify-between gap-3">
-      <h3 class="text-lg font-semibold text-[#bd1e59]">A tiny secret</h3>
-      <button id="secretClose" class="text-sm text-pink-900/70 hover:text-pink-900" type="button">Close</button>
-    </div>
-    <p class="mt-2 text-sm text-pink-900/70">Enter the code.</p>
-    <input id="secretInput" class="mt-3 w-full rounded-md border border-pink-200 px-3 py-2" placeholder="e.g. 0214" />
-    <button id="secretSubmit" class="mt-3 w-full rounded-md px-4 py-2 bg-pink-600 text-white hover:bg-pink-500 transition" type="button">
-      Unlock
-    </button>
-    <p id="secretStatus" class="mt-3 text-sm text-pink-900/70"></p>
-  </div>
-</div>
-```
-
-#### 2) Add behavior (JS)
-
-```js
-const SECRET = '0214'; // change this to something meaningful
-let secretUnlocked = false;
-
-const psLink = document.getElementById('psLink');
-const secretModal = document.getElementById('secretModal');
-const secretClose = document.getElementById('secretClose');
-const secretInput = document.getElementById('secretInput');
-const secretSubmit = document.getElementById('secretSubmit');
-const secretStatus = document.getElementById('secretStatus');
-
-function openSecret() {
-  secretModal.classList.remove('hidden');
-  secretModal.classList.add('flex');
-  secretStatus.textContent = '';
-  secretInput.value = '';
-  secretInput.focus();
-}
-
-function closeSecret() {
-  secretModal.classList.add('hidden');
-  secretModal.classList.remove('flex');
-}
-
-psLink.addEventListener('click', openSecret);
-secretClose.addEventListener('click', closeSecret);
-secretModal.addEventListener('click', (e) => {
-  if (e.target === secretModal) closeSecret();
-});
-
-secretSubmit.addEventListener('click', () => {
-  const attempt = (secretInput.value || '').trim();
-  if (attempt !== SECRET) {
-    secretStatus.textContent = 'Nope — but cute try.';
-    return;
-  }
-
-  secretUnlocked = true;
-  secretStatus.textContent = 'Unlocked.';
-  closeSecret();
-
-  // Example unlock: unlock the love letter even without pressing “Yes”
-  letterUnlocked = true;
-  letterLockedNote.textContent = 'Unlocked.';
-});
-```
-
----
-
 ## Assets plan (photos + letter)
 
 ### Photos
@@ -641,7 +556,4 @@ Your current “Yes” handler starts here:
 - **Invite**:
   - Radio selection changes message.
   - Clipboard copy works; fallback textarea appears if blocked.
-- **Secret code**:
-  - Wrong code shows gentle error.
-  - Right code unlocks the intended bonus.
 
