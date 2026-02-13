@@ -8,72 +8,7 @@
   <title>Valentine's Day</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <style>
-    .gradient-background {
-      background: linear-gradient(180deg, #ffd0e5 0%, #ffe8f2 36%, #ffffff 100%);
-      min-height: 100vh;
-    }
-
-    .bounce {
-      animation: bounce 2s ease infinite;
-    }
-
-    .shake {
-      animation: shake 1.2s ease-in-out infinite;
-      transform-origin: center;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-      }
-      40% {
-        transform: translateY(-20px);
-      }
-      60% {
-        transform: translateY(-10px);
-      }
-    }
-
-    @keyframes shake {
-      0%, 100% {
-        transform: translateX(0) rotate(0deg);
-      }
-      20% {
-        transform: translateX(-2px) rotate(-4deg);
-      }
-      40% {
-        transform: translateX(2px) rotate(3deg);
-      }
-      60% {
-        transform: translateX(-1px) rotate(-2deg);
-      }
-      80% {
-        transform: translateX(1px) rotate(2deg);
-      }
-    }
-
-    .letter-roll-container {
-      perspective: 1000px;
-      overflow: hidden;
-    }
-
-    .letter-roll {
-      transform-origin: top center;
-      transform: rotateX(90deg);
-      max-height: 0;
-      opacity: 0;
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                  max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                  opacity 0.6s ease-out 0.2s;
-    }
-
-    .letter-roll.open {
-      transform: rotateX(0deg);
-      max-height: 1000px;
-      opacity: 1;
-    }
-  </style>
+  <link rel="stylesheet" href="./styles.css">
   <!-- Preload images so transitions feel instant -->
   <link rel="preload" as="image" href="./images/image1.gif">
   <link rel="preload" as="image" href="./images/image2.gif">
@@ -211,6 +146,7 @@
       let buttonWidth = 80;
       let fontSize = 20;
       let letterOpenedOnce = false;
+      let noButtonSmashed = false;
 
       openLetterButton.addEventListener('click', () => {
         const isOpening = !letterBody.classList.contains('open');
@@ -231,7 +167,30 @@
       });
 
       noButton.addEventListener('click', () => {
-        if (noClickCount >= MAX_NO_CLICKS) return;
+        // After the final message ("I'm gonna cry..."), clicking again smashes the button away
+        if (noClickCount >= MAX_NO_CLICKS) {
+          if (noButtonSmashed) return;
+          noButtonSmashed = true;
+          noButton.disabled = true;
+          noButton.classList.add('no-shatter');
+
+          // Create hammer image positioned over the No button
+          const rect = noButton.getBoundingClientRect();
+          const hammer = document.createElement('img');
+          hammer.src = './images/hammer.png';
+          hammer.alt = 'Hammer smashing the No option';
+          hammer.className = 'hammer-smash';
+          hammer.style.left = `${rect.left + rect.width / 2}px`;
+          hammer.style.top = `${rect.top}px`;
+          document.body.appendChild(hammer);
+
+          // Remove from layout after animation finishes
+          setTimeout(() => {
+            noButton.style.display = 'none';
+            hammer.remove();
+          }, 1300);
+          return;
+        }
 
         noClickCount++;
 
