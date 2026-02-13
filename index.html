@@ -51,7 +51,6 @@
           <div class="flex items-start justify-between gap-3">
             <div>
               <h2 class="text-2xl font-semibold text-[#bd1e59]">A letter for you</h2>
-              <p class="text-sm text-pink-900/70 mt-1">Tap the little envelope.</p>
             </div>
             <button
               id="openLetterButton"
@@ -65,26 +64,26 @@
 
           <div class="mt-4">
             <div id="letterLockedNote" class="text-sm text-pink-900/70">
-              <!-- Updated in JS after Yes is clicked -->
-              <!-- Intentionally left subtle so there's no hint before Yes -->
             </div>
 
             <div class="letter-roll-container mt-4">
               <div id="letterBody" class="letter-roll text-pink-950/90 leading-relaxed">
-                <p>My love,</p>
+                <p>Dear Jem,</p>
                 <p class="mt-3">
-                  I'm really grateful for you — for the way you make me feel understood, cared for, and
-                  genuinely happy.
+                  I'm sorry I took so long to ask you to be my Valentine. I had many ideas to ask you out but then I realized it wouldn't ship
+                  in time for Valentine's Day and apparently I can't ask you out on Valentine's Day.
                 </p>
                 <p class="mt-3">
-                  I love spending time with you, I love learning you, and I love the little moments
-                  with you that end up meaning the most to me.
+                  I just wanted to say that I love every moment I spend with you.
+                  I love spending time with you, I love learning about you, and I love watching you do everything.
+                  Even though I'm not the best at showing it, I'm really grateful for you.
+                  I'm very glad that God placed you in my life.
                 </p>
                 <p class="mt-3">
-                  If you'll let me, I'd love to make this Valentine's Day special for us.
+                  If you'll let me, I'd love if you were to be my Valentine.
                 </p>
                 <p class="mt-3">Love,</p>
-                <p>Your Name</p>
+                <p>Naveen</p>
               </div>
             </div>
           </div>
@@ -214,7 +213,7 @@
       yesButton.addEventListener('click', () => {
         imageDisplay.src = IMAGE_PATHS[IMAGE_PATHS.length - 1];
         imageDisplay.alt = ALT_TEXTS[ALT_TEXTS.length - 1];
-        valentineQuestion.textContent = 'Yayyy!! :3';
+        valentineQuestion.textContent = 'Good Job! :3';
         responseButtons.style.display = 'none';
         letterCard.classList.remove('hidden');
         letterLockedNote.textContent = 'Open it when you’re ready.';
