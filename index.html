@@ -52,6 +52,27 @@
         transform: translateX(1px) rotate(2deg);
       }
     }
+
+    .letter-roll-container {
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .letter-roll {
+      transform-origin: top center;
+      transform: rotateX(90deg);
+      max-height: 0;
+      opacity: 0;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                  max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.6s ease-out 0.2s;
+    }
+
+    .letter-roll.open {
+      transform: rotateX(0deg);
+      max-height: 1000px;
+      opacity: 1;
+    }
   </style>
   <!-- Preload images so transitions feel instant -->
   <link rel="preload" as="image" href="./images/image1.gif">
@@ -99,7 +120,7 @@
             </div>
             <button
               id="openLetterButton"
-              class="shake inline-flex items-center justify-center rounded-md px-3 py-2 text-xl bg-pink-600 text-white hover:bg-pink-500 transition"
+              class="shake inline-flex items-center justify-center rounded-md px-6 py-4 text-7xl bg-pink-600 text-white hover:bg-pink-500 transition"
               type="button"
               aria-label="Open letter"
             >
@@ -107,31 +128,29 @@
             </button>
           </div>
 
-          <div class="mt-4 text-pink-950/90 leading-relaxed">
-            <p id="letterPreview">
-              I’ve been thinking about you a lot lately, and I wanted to tell you something…
-            </p>
-
-            <div id="letterLockedNote" class="mt-3 text-sm text-pink-900/70">
+          <div class="mt-4">
+            <div id="letterLockedNote" class="text-sm text-pink-900/70">
               <!-- Updated in JS after Yes is clicked -->
-              <!-- Intentionally left subtle so there’s no hint before Yes -->
+              <!-- Intentionally left subtle so there's no hint before Yes -->
             </div>
 
-            <div id="letterBody" class="mt-4 hidden">
-              <p>My love,</p>
-              <p class="mt-3">
-                I’m really grateful for you — for the way you make me feel understood, cared for, and
-                genuinely happy.
-              </p>
-              <p class="mt-3">
-                I love spending time with you, I love learning you, and I love the little moments
-                with you that end up meaning the most to me.
-              </p>
-              <p class="mt-3">
-                If you’ll let me, I’d love to make this Valentine’s Day special for us.
-              </p>
-              <p class="mt-3">Love,</p>
-              <p>Your Name</p>
+            <div class="letter-roll-container mt-4">
+              <div id="letterBody" class="letter-roll text-pink-950/90 leading-relaxed">
+                <p>My love,</p>
+                <p class="mt-3">
+                  I'm really grateful for you — for the way you make me feel understood, cared for, and
+                  genuinely happy.
+                </p>
+                <p class="mt-3">
+                  I love spending time with you, I love learning you, and I love the little moments
+                  with you that end up meaning the most to me.
+                </p>
+                <p class="mt-3">
+                  If you'll let me, I'd love to make this Valentine's Day special for us.
+                </p>
+                <p class="mt-3">Love,</p>
+                <p>Your Name</p>
+              </div>
             </div>
           </div>
         </div>
@@ -194,9 +213,9 @@
       let letterOpenedOnce = false;
 
       openLetterButton.addEventListener('click', () => {
-        const opening = letterBody.classList.contains('hidden');
+        const isOpening = !letterBody.classList.contains('open');
 
-        if (opening && !letterOpenedOnce) {
+        if (isOpening && !letterOpenedOnce) {
           letterOpenedOnce = true;
 
           // Small celebratory confetti when the letter is first opened
@@ -208,7 +227,7 @@
           });
         }
 
-        letterBody.classList.toggle('hidden');
+        letterBody.classList.toggle('open');
       });
 
       noButton.addEventListener('click', () => {
